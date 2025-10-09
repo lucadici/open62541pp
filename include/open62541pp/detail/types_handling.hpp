@@ -139,7 +139,11 @@ void clearArray(T* array, size_t size, const UA_DataType& type) noexcept {
     if constexpr (IsPointerFree<T>::value) {
         std::memset(array, 0, size * sizeof(T));
     } else {
-        std::for_each_n(array, size, [&](auto& item) { clear(item, type); });
+        // LDC
+        // std::for_each_n(array, size, [&](auto& item) { clear(item, type); });
+        for (size_t i = 0; i < size; ++i) {
+            clear(array[i], type);
+        }
     }
 }
 

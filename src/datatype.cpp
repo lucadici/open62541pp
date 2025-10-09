@@ -18,7 +18,11 @@ void clear(UA_DataTypeMember& native) noexcept {
 
 static void clearMembers(UA_DataType& native) noexcept {
 #if UAPP_HAS_TYPEDESCRIPTION
-    std::for_each_n(native.members, native.membersSize, [](auto& member) { clear(member); });
+    // LDC
+    //  std::for_each_n(native.members, native.membersSize, [](auto& member) { clear(member); });
+    for (size_t i = 0; i < native.membersSize; ++i) {
+        clear(native.members[i]);
+    }
 #endif
     detail::deallocateArray(native.members);
     native.members = nullptr;
@@ -40,11 +44,15 @@ void clear(UA_DataTypeArray& native) noexcept {
     const bool cleanup = true;
 #endif
     if (cleanup) {
-        std::for_each_n(
-            const_cast<UA_DataType*>(native.types),  // NOLINT
-            native.typesSize,
-            [](auto& type) { clear(type); }
-        );
+        // LDC
+        // std::for_each_n(
+        //     const_cast<UA_DataType*>(native.types),  // NOLINT
+        //     native.typesSize,
+        //     [](auto& type) { clear(type); }
+        // );
+        for (size_t i = 0; i < native.typesSize; ++i) {
+            clear(const_cast<UA_DataType&>(native.types[i]));  // NOLINT
+        }
     }
     deallocateArray(const_cast<UA_DataType*>(native.types));  // NOLINT
     native.types = nullptr;
