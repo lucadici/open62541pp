@@ -27,6 +27,8 @@ struct DataSource : public opcua::DataSourceBase {
         [[maybe_unused]] const opcua::NumericRange* range,
         const opcua::DataValue& dv
     ) override {
+        // return UA_STATUSCODE_BADUNEXPECTEDERROR;  // LDC: avoid writing value and return error to client
+
         data = dv.value().to<T>();
         std::cout << "Write value to data source: " << data << "\n";
         return UA_STATUSCODE_GOOD;
