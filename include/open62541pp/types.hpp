@@ -265,6 +265,11 @@ public:
     operator std::basic_string_view<char, Traits>() const noexcept {  // NOLINT(*-conversions)
         return {data(), size()};
     }
+
+    /// Implicit conversion to std::string.
+    operator std::string() const {  // NOLINT(*-conversions)
+        return std::string{data(), size()};
+    }
 };
 
 /// @relates String
@@ -572,6 +577,10 @@ public:
     template <typename Traits>
     explicit operator std::basic_string_view<char, Traits>() const noexcept {
         return {reinterpret_cast<const char*>(data()), size()};  // NOLINT
+    }
+
+    explicit operator std::string() const {
+        return std::string(reinterpret_cast<const char*>(data()), size());
     }
 
     /// Convert to Base64 encoded string.

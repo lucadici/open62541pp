@@ -54,7 +54,7 @@ struct SessionRegistry {
 /**
  * Internal storage for Server class.
  */
-struct ServerContext {
+    struct ServerContext {
     ExceptionCatcher exceptionCatcher;
     SessionRegistry sessionRegistry;
     std::atomic<bool> running{false};
@@ -62,6 +62,24 @@ struct ServerContext {
 
     ContextMap<uint64_t, Staleable<std::function<void()>>> callbacks;
     ContextMap<NodeId, NodeContext> nodeContexts;
+
+#ifdef UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS
+    struct ConditionTwoStateReg {
+        NodeId source;
+        bool removeBranch{false};
+        std::function<UA_StatusCode(Session&, const NodeId&, bool)> cb;  // may capture Condition* for virtual dispatch
+    };
+    struct ConditionTwoStateCallbacks {
+        std::optional<ConditionTwoStateReg> enteringEnabled;
+        std::optional<ConditionTwoStateReg> enteringAcked;
+        std::optional<ConditionTwoStateReg> enteringConfirmed;
+        std::optional<ConditionTwoStateReg> enteringActive;
+    };
+    ContextMap<NodeId, ConditionTwoStateCallbacks> conditionCallbacks;
+
+    // Thread-local-ish storage for the session involved in current A&C transition
+    std::optional<NodeId> currentConditionSessionId;
+#endif
 
 #ifdef UA_ENABLE_SUBSCRIPTIONS
     using SubId = IntegerId;  // always 0

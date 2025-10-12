@@ -328,11 +328,11 @@ static void runStartup(Server& server, detail::ServerContext& context) {
     context.running = true;
 }
 
-uint16_t Server::runIterate() {
+uint16_t Server::runIterate(bool wait) {
     if (!context().running) {
         runStartup(*this, context());
     }
-    auto interval = UA_Server_run_iterate(handle(), false /* don't wait */);
+    auto interval = UA_Server_run_iterate(handle(), wait);
     context().exceptionCatcher.rethrow();
     return interval;
 }
