@@ -67,7 +67,7 @@ struct ServerContext {
     struct ConditionTwoStateReg {
         NodeId source;
         bool removeBranch{false};
-        std::function<void(const NodeId&, bool)> cb;  // may capture Condition* for virtual dispatch
+        std::function<UA_StatusCode(const NodeId&, bool)> cb;  // may capture Condition* for virtual dispatch
     };
     struct ConditionTwoStateCallbacks {
         std::optional<ConditionTwoStateReg> enteringEnabled;

@@ -62,17 +62,21 @@ int main() {
     cond
         .onEnabled([&condName](const NodeId&, bool) {
             std::cout << "[A&C] Enabled=true | condition=" << condName << std::endl << std::flush;
+            return UA_STATUSCODE_GOOD;
         })
         .onAcked([&condName](const NodeId&, bool) {
             std::cout << "[A&C] Acked=true | condition=" << condName << std::endl << std::flush;
+            return UA_STATUSCODE_GOOD;
         })
         .onConfirmed([&condName](const NodeId&, bool) {
             std::cout << "[A&C] Confirmed=true | condition=" << condName << std::endl << std::flush;
+            return UA_STATUSCODE_GOOD;
         })
         .onActive([&condName](const NodeId&, bool) {
             // Note: this will not be fired when alarms is deactivated, because
             // this is something managed by server, not by client
             std::cout << "[A&C] Active=true | condition=" << condName << std::endl << std::flush;
+            return UA_STATUSCODE_GOOD;
         });
 
     // Variable to activate/deactivate Condition 1 (writes ActiveState/Id)

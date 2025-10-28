@@ -74,16 +74,16 @@ public:
 
     // Fluent registration that calls virtual hooks
     Condition& onEnabled(const NodeId& source,
-                         std::function<void(const NodeId&, bool)> cb,
+                         std::function<UA_StatusCode(const NodeId&, bool)> cb,
                          bool removeBranch = false);
     Condition& onAcked(const NodeId& source,
-                       std::function<void(const NodeId&, bool)> cb,
+                       std::function<UA_StatusCode(const NodeId&, bool)> cb,
                        bool removeBranch = false);
     Condition& onConfirmed(const NodeId& source,
-                           std::function<void(const NodeId&, bool)> cb,
+                           std::function<UA_StatusCode(const NodeId&, bool)> cb,
                            bool removeBranch = false);
     Condition& onActive(const NodeId& source,
-                        std::function<void(const NodeId&, bool)> cb,
+                        std::function<UA_StatusCode(const NodeId&, bool)> cb,
                         bool removeBranch = false);
 
     // (No message overloads; callbacks receive only source/removeBranch)

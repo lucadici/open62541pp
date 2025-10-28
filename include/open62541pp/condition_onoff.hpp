@@ -42,6 +42,11 @@ public:
         setField({0, "Time"}, Variant{DateTime::now()});
         setField({0, "Retain"}, Variant{active});
         setVariableField({0, "ActiveState"}, {0, "Id"}, Variant{active});
+        if (!active) {
+            // Reset acknowledgment and confirmation when alarm becomes inactive
+            setVariableField({0, "AckedState"}, {0, "Id"}, Variant{false});
+            setVariableField({0, "ConfirmedState"}, {0, "Id"}, Variant{false});
+        }
         trigger(source);
     }
 
@@ -52,19 +57,19 @@ public:
 
     // Convenience overloads: bind to the stored source node
 #ifdef UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS
-    OnOffCondition& onEnabled(std::function<void(const NodeId&, bool)> cb, bool removeBranch=false) {
+    OnOffCondition& onEnabled(std::function<UA_StatusCode(const NodeId&, bool)> cb, bool removeBranch=false) {
         Condition::onEnabled(source_, std::move(cb), removeBranch);
         return *this;
     }
-    OnOffCondition& onAcked(std::function<void(const NodeId&, bool)> cb, bool removeBranch=false) {
+    OnOffCondition& onAcked(std::function<UA_StatusCode(const NodeId&, bool)> cb, bool removeBranch=false) {
         Condition::onAcked(source_, std::move(cb), removeBranch);
         return *this;
     }
-    OnOffCondition& onConfirmed(std::function<void(const NodeId&, bool)> cb, bool removeBranch=false) {
+    OnOffCondition& onConfirmed(std::function<UA_StatusCode(const NodeId&, bool)> cb, bool removeBranch=false) {
         Condition::onConfirmed(source_, std::move(cb), removeBranch);
         return *this;
     }
-    OnOffCondition& onActive(std::function<void(const NodeId&, bool)> cb, bool removeBranch=false) {
+    OnOffCondition& onActive(std::function<UA_StatusCode(const NodeId&, bool)> cb, bool removeBranch=false) {
         Condition::onActive(source_, std::move(cb), removeBranch);
         return *this;
     }

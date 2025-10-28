@@ -88,7 +88,7 @@ static UA_StatusCode twoStateThunkEnabled(UA_Server* s, const UA_NodeId* conditi
     UA_LocalizedText_clear(&dn);
     if (auto* cbs = getCallbacks(*srv, condId)) {
         if (cbs->enteringEnabled && cbs->enteringEnabled->cb) {
-            cbs->enteringEnabled->cb(cbs->enteringEnabled->source, cbs->enteringEnabled->removeBranch);
+            return cbs->enteringEnabled->cb(cbs->enteringEnabled->source, cbs->enteringEnabled->removeBranch);
         }
     }
     return UA_STATUSCODE_GOOD;
@@ -105,7 +105,7 @@ static UA_StatusCode twoStateThunkAcked(UA_Server* s, const UA_NodeId* condition
     UA_LocalizedText_clear(&dn2);
     if (auto* cbs = getCallbacks(*srv, condId)) {
         if (cbs->enteringAcked && cbs->enteringAcked->cb) {
-            cbs->enteringAcked->cb(cbs->enteringAcked->source, cbs->enteringAcked->removeBranch);
+            return cbs->enteringAcked->cb(cbs->enteringAcked->source, cbs->enteringAcked->removeBranch);
         }
     }
     return UA_STATUSCODE_GOOD;
@@ -122,7 +122,7 @@ static UA_StatusCode twoStateThunkConfirmed(UA_Server* s, const UA_NodeId* condi
     UA_LocalizedText_clear(&dn3);
     if (auto* cbs = getCallbacks(*srv, condId)) {
         if (cbs->enteringConfirmed && cbs->enteringConfirmed->cb) {
-            cbs->enteringConfirmed->cb(cbs->enteringConfirmed->source, cbs->enteringConfirmed->removeBranch);
+            return cbs->enteringConfirmed->cb(cbs->enteringConfirmed->source, cbs->enteringConfirmed->removeBranch);
         }
     }
     return UA_STATUSCODE_GOOD;
@@ -139,7 +139,7 @@ static UA_StatusCode twoStateThunkActive(UA_Server* s, const UA_NodeId* conditio
     UA_LocalizedText_clear(&dn4);
     if (auto* cbs = getCallbacks(*srv, condId)) {
         if (cbs->enteringActive && cbs->enteringActive->cb) {
-            cbs->enteringActive->cb(cbs->enteringActive->source, cbs->enteringActive->removeBranch);
+            return cbs->enteringActive->cb(cbs->enteringActive->source, cbs->enteringActive->removeBranch);
         }
     }
     return UA_STATUSCODE_GOOD;
@@ -157,7 +157,7 @@ void Condition::setTwoStateCallback(const NodeId& conditionSource,
 }
 
 Condition& Condition::onEnabled(const NodeId& source,
-                                std::function<void(const NodeId&, bool)> cb,
+                                std::function<UA_StatusCode(const NodeId&, bool)> cb,
                                 bool removeBranch) {
     auto& ctx = opcua::detail::getContext(*connection_);
     auto* cbs = ctx.conditionCallbacks[id_];
@@ -172,7 +172,7 @@ Condition& Condition::onEnabled(const NodeId& source,
 // removed onEnabled overload with message
 
 Condition& Condition::onAcked(const NodeId& source,
-                              std::function<void(const NodeId&, bool)> cb,
+                              std::function<UA_StatusCode(const NodeId&, bool)> cb,
                               bool removeBranch) {
     auto& ctx = opcua::detail::getContext(*connection_);
     auto* cbs = ctx.conditionCallbacks[id_];
@@ -187,7 +187,7 @@ Condition& Condition::onAcked(const NodeId& source,
 // removed onAcked overload with message
 
 Condition& Condition::onConfirmed(const NodeId& source,
-                                  std::function<void(const NodeId&, bool)> cb,
+                                  std::function<UA_StatusCode(const NodeId&, bool)> cb,
                                   bool removeBranch) {
     auto& ctx = opcua::detail::getContext(*connection_);
     auto* cbs = ctx.conditionCallbacks[id_];
@@ -202,7 +202,7 @@ Condition& Condition::onConfirmed(const NodeId& source,
 // removed onConfirmed overload with message
 
 Condition& Condition::onActive(const NodeId& source,
-                               std::function<void(const NodeId&, bool)> cb,
+                               std::function<UA_StatusCode(const NodeId&, bool)> cb,
                                bool removeBranch) {
     auto& ctx = opcua::detail::getContext(*connection_);
     auto* cbs = ctx.conditionCallbacks[id_];
