@@ -49,6 +49,17 @@ if(NOT TARGET open62541::open62541)
 endif()
 get_target_property(open62541_version open62541::open62541 VERSION)
 
+# Report whether Alarms & Conditions are enabled in the underlying open62541 build
+if(DEFINED UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS)
+    if(UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS)
+        message(STATUS "UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS: ON")
+    else()
+        message(STATUS "UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS: OFF")
+    endif()
+else()
+    message(STATUS "UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS: not defined")
+endif()
+
 # async subscription & monitored item functions require v1.1
 if(UA_ENABLE_SUBSCRIPTIONS AND open62541_version VERSION_GREATER_EQUAL "1.1")
     add_example(client_async.cpp)
@@ -86,6 +97,10 @@ endif()
 if(UA_ENABLE_SUBSCRIPTIONS_EVENTS AND UA_ENABLE_METHODCALLS)
     add_example(events/client_eventfilter.cpp)
     add_example(events/server_events.cpp)
+endif()
+
+if(UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS)
+    add_example(alarms_conditions/server_alarms_conditions.cpp)
 endif()
 
 add_example(typeconversion.cpp)

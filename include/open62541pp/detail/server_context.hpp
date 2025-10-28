@@ -63,6 +63,21 @@ struct ServerContext {
     ContextMap<uint64_t, Staleable<std::function<void()>>> callbacks;
     ContextMap<NodeId, NodeContext> nodeContexts;
 
+#ifdef UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS
+    struct ConditionTwoStateReg {
+        NodeId source;
+        bool removeBranch{false};
+        std::function<void(const NodeId&, bool)> cb;  // may capture Condition* for virtual dispatch
+    };
+    struct ConditionTwoStateCallbacks {
+        std::optional<ConditionTwoStateReg> enteringEnabled;
+        std::optional<ConditionTwoStateReg> enteringAcked;
+        std::optional<ConditionTwoStateReg> enteringConfirmed;
+        std::optional<ConditionTwoStateReg> enteringActive;
+    };
+    ContextMap<NodeId, ConditionTwoStateCallbacks> conditionCallbacks;
+#endif
+
 #ifdef UA_ENABLE_SUBSCRIPTIONS
     using SubId = IntegerId;  // always 0
     using MonId = IntegerId;

@@ -116,7 +116,7 @@ if(UAPP_INTERNAL_OPEN62541)
         set(UA_FORCE_WERROR OFF OFF CACHE BOOL "")
     endif()
 
-    add_subdirectory(3rdparty/open62541)  # target open62541::open62541
+add_subdirectory(3rdparty/open62541)  # target open62541::open62541
 else()
     find_package(open62541 REQUIRED)
 endif()
@@ -128,6 +128,17 @@ if(open62541_ipo)
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 else()
     message(STATUS "IPO not enabled")
+endif()
+
+# Print Alarms & Conditions feature flag from open62541
+if(DEFINED UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS)
+    if(UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS)
+        message(STATUS "open62541 A&C support: ON (UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS)")
+    else()
+        message(STATUS "open62541 A&C support: OFF (UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS)")
+    endif()
+else()
+    message(STATUS "open62541 A&C support: not defined (UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS)")
 endif()
 
 # open62541pp library (static/shared depending on option BUILD_SHARED_LIBS)
@@ -152,6 +163,7 @@ add_library(
     src/callback.cpp
     src/client.cpp
     src/datatype.cpp
+    src/condition.cpp
     src/event.cpp
     src/monitoreditem.cpp
     src/node.cpp

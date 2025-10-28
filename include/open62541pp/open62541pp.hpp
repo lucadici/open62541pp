@@ -6,6 +6,8 @@
 #include "open62541pp/common.hpp"
 #include "open62541pp/config.hpp"
 #include "open62541pp/datatype.hpp"
+#include "open62541pp/condition.hpp"
+#include "open62541pp/condition_onoff.hpp"
 #include "open62541pp/event.hpp"
 #include "open62541pp/exception.hpp"
 #include "open62541pp/monitoreditem.hpp"
