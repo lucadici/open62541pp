@@ -574,6 +574,10 @@ public:
         return {reinterpret_cast<const char*>(data()), size()};  // NOLINT
     }
 
+    explicit operator std::string() const {
+        return std::string(reinterpret_cast<const char*>(data()), size());
+    }
+
     /// Convert to Base64 encoded string.
     /// @note Supported since open62541 v1.1
     String toBase64() const;
