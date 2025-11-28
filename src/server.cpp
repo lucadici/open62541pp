@@ -33,13 +33,17 @@ void TypeHandler<UA_ServerConfig>::clear(UA_ServerConfig& config) noexcept {
     UA_ServerConfig_clean(&config);
 }
 
-ServerConfig::ServerConfig() {
-    handle()->logging = makeSilentLogger();
+ServerConfig::ServerConfig(bool silentLogging) {
+    if (silentLogging) {
+        handle()->logging = makeSilentLogger();
+    }
     throwIfBad(UA_ServerConfig_setDefault(handle()));
 }
 
-ServerConfig::ServerConfig(uint16_t port, const ByteString& certificate) {
-    handle()->logging = makeSilentLogger();
+ServerConfig::ServerConfig(uint16_t port, const ByteString& certificate, bool silentLogging) {
+    if (silentLogging) {
+        handle()->logging = makeSilentLogger();
+    }
     throwIfBad(UA_ServerConfig_setMinimal(
         handle(), port, certificate.empty() ? nullptr : certificate.handle()
     ));
@@ -52,9 +56,12 @@ ServerConfig::ServerConfig(
     const ByteString& privateKey,
     Span<const ByteString> trustList,
     Span<const ByteString> issuerList,
-    Span<const ByteString> revocationList
+    Span<const ByteString> revocationList,
+    bool silentLogging
 ) {
-    handle()->logging = makeSilentLogger();
+    if (silentLogging) {
+        handle()->logging = makeSilentLogger();
+    }
     throwIfBad(UA_ServerConfig_setDefaultWithSecurityPolicies(
         handle(),
         port,

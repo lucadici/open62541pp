@@ -42,7 +42,7 @@ public:
      * Security policies:
      * - [None](http://opcfoundation.org/UA/SecurityPolicy#None)
      */
-    ClientConfig();
+    explicit ClientConfig(bool silentLogging = false);
 
 #ifdef UA_ENABLE_ENCRYPTION
     /**
@@ -66,7 +66,8 @@ public:
         const ByteString& certificate,
         const ByteString& privateKey,
         Span<const ByteString> trustList,
-        Span<const ByteString> revocationList = {}
+        Span<const ByteString> revocationList = {},
+        bool silentLogging = false
     );
 #endif
 

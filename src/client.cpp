@@ -74,8 +74,10 @@ void TypeHandler<UA_ClientConfig>::clear(UA_ClientConfig& config) noexcept {
 #endif
 }
 
-ClientConfig::ClientConfig() {
-    handle()->logging = makeSilentLogger();
+ClientConfig::ClientConfig(bool silentLogging) {
+    if (silentLogging) {
+        handle()->logging = makeSilentLogger();
+    }
     throwIfBad(UA_ClientConfig_setDefault(handle()));
 }
 
@@ -84,9 +86,12 @@ ClientConfig::ClientConfig(
     const ByteString& certificate,
     const ByteString& privateKey,
     Span<const ByteString> trustList,
-    Span<const ByteString> revocationList
+    Span<const ByteString> revocationList,
+    bool silentLogging
 ) {
-    handle()->logging = makeSilentLogger();
+    if (silentLogging) {
+        handle()->logging = makeSilentLogger();
+    }
     throwIfBad(UA_ClientConfig_setDefaultEncryption(
         handle(),
         certificate,

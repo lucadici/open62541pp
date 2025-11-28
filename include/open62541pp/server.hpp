@@ -46,7 +46,7 @@ public:
      * Security policies:
      * - [None](http://opcfoundation.org/UA/SecurityPolicy#None)
      */
-    ServerConfig();
+    explicit ServerConfig(bool silentLogging = false);
 
     /**
      * Create server config with minimal configuration.
@@ -56,7 +56,9 @@ public:
      * @param port Port number
      * @param certificate Optional X.509 v3 certificate in `DER` encoded format
      */
-    explicit ServerConfig(uint16_t port, const ByteString& certificate = {});
+    explicit ServerConfig(uint16_t port,
+                          const ByteString& certificate = {},
+                          bool silentLogging = false);
 
 #ifdef UA_ENABLE_ENCRYPTION
     /**
@@ -85,7 +87,8 @@ public:
         const ByteString& privateKey,
         Span<const ByteString> trustList,
         Span<const ByteString> issuerList,
-        Span<const ByteString> revocationList = {}
+        Span<const ByteString> revocationList = {},
+        bool silentLogging = false
     );
 #endif
 
