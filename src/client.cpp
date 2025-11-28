@@ -12,6 +12,7 @@
 #include "open62541pp/result.hpp"
 #include "open62541pp/services/attribute_highlevel.hpp"  // readValue
 #include "open62541pp/services/subscription.hpp"
+#include <open62541/plugin/log_stdout.h>
 
 namespace opcua {
 
@@ -50,6 +51,12 @@ UA_ClientConfig TypeHandler<UA_ClientConfig>::move(UA_ClientConfig&& config) noe
     return std::exchange(config, {});
 }
 
+// LDC -> this is automatically deleted when setLogger is applied, or on dtor
+static UA_Logger* makeSilentLogger() {
+    // Use stdout logger with highest level to suppress info/warn during init.
+    return UA_Log_Stdout_new(UA_LOGLEVEL_ERROR);
+}
+
 void TypeHandler<UA_ClientConfig>::clear(UA_ClientConfig& config) noexcept {
     detail::deallocate(config.customDataTypes);
     config.customDataTypes = nullptr;
@@ -68,6 +75,7 @@ void TypeHandler<UA_ClientConfig>::clear(UA_ClientConfig& config) noexcept {
 }
 
 ClientConfig::ClientConfig() {
+    handle()->logging = makeSilentLogger();
     throwIfBad(UA_ClientConfig_setDefault(handle()));
 }
 
@@ -78,6 +86,7 @@ ClientConfig::ClientConfig(
     Span<const ByteString> trustList,
     Span<const ByteString> revocationList
 ) {
+    handle()->logging = makeSilentLogger();
     throwIfBad(UA_ClientConfig_setDefaultEncryption(
         handle(),
         certificate,

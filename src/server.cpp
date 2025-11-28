@@ -10,6 +10,7 @@
 #include "open62541pp/exception.hpp"
 #include "open62541pp/services/attribute_highlevel.hpp"
 #include "open62541pp/session.hpp"
+#include <open62541/plugin/log_stdout.h>
 
 namespace opcua {
 
@@ -20,6 +21,12 @@ UA_ServerConfig TypeHandler<UA_ServerConfig>::move(UA_ServerConfig&& config) noe
     return std::exchange(config, {});
 }
 
+// LDC
+static UA_Logger* makeSilentLogger() {
+    // Use stdout logger with highest level to suppress info/warn during init.
+    return UA_Log_Stdout_new(UA_LOGLEVEL_ERROR);
+}
+
 void TypeHandler<UA_ServerConfig>::clear(UA_ServerConfig& config) noexcept {
     detail::deallocate(config.customDataTypes);
     config.customDataTypes = nullptr;
@@ -27,10 +34,12 @@ void TypeHandler<UA_ServerConfig>::clear(UA_ServerConfig& config) noexcept {
 }
 
 ServerConfig::ServerConfig() {
+    handle()->logging = makeSilentLogger();
     throwIfBad(UA_ServerConfig_setDefault(handle()));
 }
 
 ServerConfig::ServerConfig(uint16_t port, const ByteString& certificate) {
+    handle()->logging = makeSilentLogger();
     throwIfBad(UA_ServerConfig_setMinimal(
         handle(), port, certificate.empty() ? nullptr : certificate.handle()
     ));
@@ -45,6 +54,7 @@ ServerConfig::ServerConfig(
     Span<const ByteString> issuerList,
     Span<const ByteString> revocationList
 ) {
+    handle()->logging = makeSilentLogger();
     throwIfBad(UA_ServerConfig_setDefaultWithSecurityPolicies(
         handle(),
         port,
