@@ -100,9 +100,4 @@ if(UA_ENABLE_SUBSCRIPTIONS_EVENTS AND UA_ENABLE_METHODCALLS)
     add_example(events/server_events.cpp)
 endif()
 
-# This is not working anymore
-# if(UA_ENABLE_SUBSCRIPTIONS_ALARMS_CONDITIONS)
-#     add_example(alarms_conditions/server_alarms_conditions.cpp)
-# endif()
-
 add_example(typeconversion.cpp)

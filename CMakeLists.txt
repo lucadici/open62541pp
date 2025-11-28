@@ -163,7 +163,6 @@ add_library(
     src/callback.cpp
     src/client.cpp
     src/datatype.cpp
-    # src/condition.cpp
     src/event.cpp
     src/monitoreditem.cpp
     src/node.cpp
